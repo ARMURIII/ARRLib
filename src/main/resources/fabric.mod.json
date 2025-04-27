@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "id": "arrlib",
+  "version": "${version}",
+  "name": "ARRLib",
+  "description": "Misc library for personal uses, no one knows what \"ARR\" stands for.",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/arrlib/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-datagen": [
+      "arr.armuriii.arrlib.client.datagen.ARRLibDataGenerator"
+    ],
+    "client": [
+      "arr.armuriii.arrlib.client.ARRLibClient"
+    ],
+    "main": [
+      "arr.armuriii.arrlib.ARRLib"
+    ]
+  },
+  "custom": {
+    "loom:injected_interfaces": {
+      "net/minecraft/class_1291": [
+        "arr/armuriii/arrlib/interfaces/IStatusEffect"
+      ],
+      "net/minecraft/class_1792": [
+        "arr/armuriii/arrlib/interfaces/IItem"
+      ]
+    },
+    "cardinal-components": [
+      "arrlib:damage_immunity"
+    ]
+  },
+  "mixins": [
+    "arrlib.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "arr.armuriii.arrlib.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "EnchantmentHelperMixin",
+    "LivingEntityMixin",
+    "PlayerEntityMixin",
+    "SwordItemMixin",
+    "interfaces.StatusEffectMixin"
+  ],
+  "client": [
+    "client.AbstractInventoryScreenMixin",
+    "client.BipedEntityModelMixin",
+    "client.HudMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
