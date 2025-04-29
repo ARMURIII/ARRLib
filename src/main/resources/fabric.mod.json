@@ -18,6 +18,9 @@
     ],
     "main": [
       "arr.armuriii.arrlib.ARRLib"
+    ],
+    "cardinal-components-entity": [
+      "arr.armuriii.arrlib.ARRLib"
     ]
   },
   "custom": {
@@ -30,7 +33,8 @@
       ]
     },
     "cardinal-components": [
-      "arrlib:damage_immunity"
+      "arrlib:damage_immunity",
+      "arrlib:effect_immunity"
     ]
   },
   "mixins": [

@@ -1,20 +1,31 @@
 package arr.armuriii.arrlib.mixin;
 
+import arr.armuriii.arrlib.ARRLib;
+import arr.armuriii.arrlib.cca.Immunity.DamageImmunityComponent;
 import arr.armuriii.arrlib.init.ARRLibEntityAttributes;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageType;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.entry.RegistryEntryList;
 import net.minecraft.util.Hand;
 import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
+
+import java.util.Iterator;
+import java.util.Optional;
 
 @Debug(export = true)
 @Mixin(PlayerEntity.class)
@@ -41,4 +52,18 @@ abstract class PlayerEntityMixin {
         ItemStack itemStack = player.getStackInHand(Hand.MAIN_HAND);
         args.set(0,itemStack.getItem().ARRLib$getSweepAttackParticle(itemStack,player));
     }
+
+    /*@ModifyReturnValue(method = "isInvulnerableTo", at = @At("RETURN"))
+    private boolean ARRLib$DamageImmunity(boolean original, DamageSource source) {
+        PlayerEntity player = (PlayerEntity) (Object)this;
+        Optional<DamageImmunityComponent> DComponent = ARRLib.DAMAGE_IMMUNITY.maybeGet(player);
+        if (DComponent.isEmpty()) return original;
+        for (DamageType damageType : DComponent.get().getImmunity()) {
+            if (source.getTypeRegistryEntry().getKey().isPresent() &&
+                    damageType == source.getTypeRegistryEntry().value()) {
+                return true;
+            }
+        }
+        return original;
+    }*/
 }
