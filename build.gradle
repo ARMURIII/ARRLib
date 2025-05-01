@@ -75,7 +75,7 @@ dependencies {
     include modImplementation("com.jamieswhiteshirt:reach-entity-attributes:2.4.0")
 
     modImplementation "maven.modrinth:amarite:1.0.8"
-    modImplementation "maven.modrinth:potluck:1.0.0"
+    //modImplementation "maven.modrinth:potluck:1.0.0"
     modImplementation "dev.emi:trinkets:3.7.2"
 }
 

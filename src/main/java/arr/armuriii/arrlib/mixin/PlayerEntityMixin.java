@@ -2,9 +2,12 @@ package arr.armuriii.arrlib.mixin;
 
 import arr.armuriii.arrlib.ARRLib;
 import arr.armuriii.arrlib.cca.Immunity.DamageImmunityComponent;
+import arr.armuriii.arrlib.cca.LockPlayerMovementComponent;
 import arr.armuriii.arrlib.init.ARRLibEntityAttributes;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageType;
 import net.minecraft.entity.damage.DamageTypes;
@@ -17,11 +20,17 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.entry.RegistryEntryList;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Hand;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import java.util.Iterator;
@@ -30,6 +39,13 @@ import java.util.Optional;
 @Debug(export = true)
 @Mixin(PlayerEntity.class)
 abstract class PlayerEntityMixin {
+
+    @Unique
+    private float prevPitchLPM;
+    @Unique
+    private float prevYawLPM;
+
+    @Shadow public abstract void playSound(SoundEvent sound, float volume, float pitch);
 
     @ModifyExpressionValue(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
     private Item ARRLib$addAttribute(Item original) {
@@ -53,17 +69,14 @@ abstract class PlayerEntityMixin {
         args.set(0,itemStack.getItem().ARRLib$getSweepAttackParticle(itemStack,player));
     }
 
-    /*@ModifyReturnValue(method = "isInvulnerableTo", at = @At("RETURN"))
+    @ModifyReturnValue(method = "isInvulnerableTo", at = @At("RETURN"))
     private boolean ARRLib$DamageImmunity(boolean original, DamageSource source) {
         PlayerEntity player = (PlayerEntity) (Object)this;
         Optional<DamageImmunityComponent> DComponent = ARRLib.DAMAGE_IMMUNITY.maybeGet(player);
         if (DComponent.isEmpty()) return original;
-        for (DamageType damageType : DComponent.get().getImmunity()) {
-            if (source.getTypeRegistryEntry().getKey().isPresent() &&
-                    damageType == source.getTypeRegistryEntry().value()) {
+        for (DamageType damageType : DComponent.get().getImmunity().toList())
+            if (source.getTypeRegistryEntry().getKey().isPresent() && damageType == source.getTypeRegistryEntry().value())
                 return true;
-            }
-        }
         return original;
-    }*/
+    }
 }

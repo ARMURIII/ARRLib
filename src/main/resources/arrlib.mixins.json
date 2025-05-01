@@ -13,7 +13,11 @@
   "client": [
     "client.AbstractInventoryScreenMixin",
     "client.BipedEntityModelMixin",
-    "client.HudMixin"
+    "client.HudMixin",
+    "client.movement.CameraMixin",
+    "client.movement.KeyboardMixin",
+    "client.movement.EntityMixin",
+    "client.movement.MouseMixin"
   ],
   "injectors": {
     "defaultRequire": 1

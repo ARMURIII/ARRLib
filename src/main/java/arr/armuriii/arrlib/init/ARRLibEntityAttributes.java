@@ -9,7 +9,7 @@ public class ARRLibEntityAttributes {
     public static final EntityAttribute SWEEPING = create("sweeping", 0.0, 0.0, 16.0);
 
     private static EntityAttribute create(final String name, final double base, final double min, final double max) {
-        return (new ClampedEntityAttribute("attribute.name.generic." + ARRLib.MOD_HELPER.getModID()  + "." + name, base, min, max)).setTracked(true);
+        return new ClampedEntityAttribute("attribute.name.generic." + ARRLib.MOD_HELPER.getModID()  + "." + name, base, min, max).setTracked(true);
     }
 
     public static void register(ModHelper modHelper) {

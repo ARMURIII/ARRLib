@@ -30,6 +30,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Optional;
 import java.util.UUID;
 
+import static arr.armuriii.arrlib.init.ARRLibEntityAttributes.SWEEPING;
+
 @Mixin(SwordItem.class)
 public class SwordItemMixin {
 
@@ -39,27 +41,6 @@ public class SwordItemMixin {
     )
     public void ARRLib$addSweepingAttribute(ToolMaterial toolMaterial, int attackDamage, float attackSpeed, Item.Settings settings, CallbackInfo ci, @Local ImmutableMultimap.Builder<EntityAttribute, EntityAttributeModifier> builder) {
         UUID SWEEP_RANGE_MODIFIER_ID = UUID.fromString("AF3F57D3-645C-4F38-A581-8C23A33DB5CF");
-        builder.put(ARRLibEntityAttributes.SWEEPING, new EntityAttributeModifier(SWEEP_RANGE_MODIFIER_ID, "Weapon modifier", 1, EntityAttributeModifier.Operation.ADDITION));
+        builder.put(SWEEPING, new EntityAttributeModifier(SWEEP_RANGE_MODIFIER_ID, "Weapon modifier", 1, EntityAttributeModifier.Operation.ADDITION));
     }
-
-    /*@Inject(
-            method = {"postHit"},
-            at = {@At(value = "HEAD")}
-    )
-    public void ARRLib$test(ItemStack stack, LivingEntity target, LivingEntity attacker, CallbackInfoReturnable<Boolean> cir) {
-        if (attacker instanceof PlayerEntity player) {
-
-            /*Optional<DamageImmunityComponent> DComponent = ARRLib.DAMAGE_IMMUNITY.maybeGet(player);
-            if (DComponent.isPresent()) {
-                DComponent.get().addImmunity(DamageTypes.CACTUS, true);
-                DComponent.get().addImmunity(DamageTypes.LAVA, false);
-            }
-
-            Optional<EffectImmunityComponent> EComponent = ARRLib.EFFECT_IMMUNITY.maybeGet(player);
-            if(EComponent.isPresent()) {
-                EComponent.get().addImmunity(StatusEffects.BLINDNESS, true);
-                EComponent.get().addImmunity(StatusEffects.DARKNESS, false);
-            }
-        }
-    }*/
 }

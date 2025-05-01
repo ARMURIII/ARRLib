@@ -14,6 +14,7 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings({"unused"})
 public class ModHelper {
 
     private final String MOD_ID;

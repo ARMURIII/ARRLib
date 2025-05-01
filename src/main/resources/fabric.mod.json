@@ -34,7 +34,9 @@
     },
     "cardinal-components": [
       "arrlib:damage_immunity",
-      "arrlib:effect_immunity"
+      "arrlib:effect_immunity",
+      "arrlib:player_enchantment",
+      "arrlib:lock_client_movement"
     ]
   },
   "mixins": [
