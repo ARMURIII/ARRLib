@@ -1,51 +1,32 @@
 package arr.armuriii.arrlib.mixin;
 
 import arr.armuriii.arrlib.ARRLib;
+import arr.armuriii.arrlib.cca.DiscardPlayerComponent;
 import arr.armuriii.arrlib.cca.Immunity.DamageImmunityComponent;
-import arr.armuriii.arrlib.cca.LockPlayerMovementComponent;
 import arr.armuriii.arrlib.init.ARRLibEntityAttributes;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageType;
-import net.minecraft.entity.damage.DamageTypes;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.entry.RegistryEntryList;
-import net.minecraft.sound.SoundEvent;
+import net.minecraft.text.Text;
+import net.minecraft.util.Arm;
 import net.minecraft.util.Hand;
-import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
-import java.util.Iterator;
 import java.util.Optional;
 
 @Debug(export = true)
 @Mixin(PlayerEntity.class)
 abstract class PlayerEntityMixin {
-
-    @Unique
-    private float prevPitchLPM;
-    @Unique
-    private float prevYawLPM;
-
-    @Shadow public abstract void playSound(SoundEvent sound, float volume, float pitch);
 
     @ModifyExpressionValue(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
     private Item ARRLib$addAttribute(Item original) {
@@ -57,13 +38,15 @@ abstract class PlayerEntityMixin {
     private void ARRLib$modifySweepingBox(Args args) {
         PlayerEntity player = (PlayerEntity) (Object)this;
         double sweeping = player.getAttributeValue(ARRLibEntityAttributes.SWEEPING);
-        args.set(0, sweeping);
-        args.set(1, sweeping/4);
-        args.set(2, sweeping);
+        if (sweeping != 0) {
+            args.set(0, sweeping);
+            args.set(1, sweeping/4);
+            args.set(2, sweeping);
+        }
     }
 
     @ModifyArgs(method = "spawnSweepAttackParticles", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;spawnParticles(Lnet/minecraft/particle/ParticleEffect;DDDIDDDD)I"))
-    private void ARRLib$addAttribute(Args args) {
+    private void ARRLib$changeParticle(Args args) {
         PlayerEntity player = (PlayerEntity)(Object)this;
         ItemStack itemStack = player.getStackInHand(Hand.MAIN_HAND);
         args.set(0,itemStack.getItem().ARRLib$getSweepAttackParticle(itemStack,player));
@@ -77,6 +60,23 @@ abstract class PlayerEntityMixin {
         for (DamageType damageType : DComponent.get().getImmunity().toList())
             if (source.getTypeRegistryEntry().getKey().isPresent() && damageType == source.getTypeRegistryEntry().value())
                 return true;
+        return original;
+    }
+
+    @ModifyReturnValue(method = "getDisplayName", at = @At("RETURN"))
+    private Text ARRLib$ChangeNameOfDiscardedPlayers(Text original) {
+        PlayerEntity player = (PlayerEntity) (Object)this;
+        Optional<DiscardPlayerComponent> DPComponent = ARRLib.DISCARD_PLAYER.maybeGet(player);
+        if (DPComponent.isPresent() && DPComponent.get().isDiscarded()) {
+            return Text.literal("err.null");
+        }
+        return original;
+    }
+
+    @ModifyReturnValue(method = "getMainArm", at = @At("RETURN"))
+    private Arm ARRLib$Test(Arm original) {
+        PlayerEntity player = (PlayerEntity)(Object)this;
+        if (player.hasStatusEffect(StatusEffects.UNLUCK)) return original.getOpposite();
         return original;
     }
 }

@@ -21,6 +21,11 @@ repositories {
     maven {
         url = "https://api.modrinth.com/maven"
     }
+    // Fabric ASM
+    maven {
+        url = "https://jitpack.io/"
+        content { includeGroupAndSubgroups("com.github") }
+    }
     // Veil
     maven { url "https://maven.blamejared.com/" }
     maven {
@@ -33,9 +38,6 @@ repositories {
     }
     maven {
         url = "https://maven.jamieswhiteshirt.com/libs-release"
-    }
-    maven {
-        url = 'https://jitpack.io'
     }
     maven {
         url "https://cursemaven.com"
@@ -64,18 +66,19 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     modApi include("xyz.amymialee:mialib:${mialib_version}")
+    //modImplementation(include("com.github.Chocohead:Fabric-ASM:v2.3"))
     include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:0.4.1")))
 
     modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cca_version}"
-    // Adds a dependency on a specific module
+
     modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-world:${project.cca_version}"
+    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-scoreboard:${project.cca_version}"
     modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-block:${project.cca_version}"
     modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${project.cca_version}"
 
     include modImplementation("com.jamieswhiteshirt:reach-entity-attributes:2.4.0")
 
     modImplementation "maven.modrinth:amarite:1.0.8"
-    //modImplementation "maven.modrinth:potluck:1.0.0"
     modImplementation "dev.emi:trinkets:3.7.2"
 }
 

@@ -4,20 +4,28 @@
   "package": "arr.armuriii.arrlib.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "DamageSourcesMixin",
     "EnchantmentHelperMixin",
+    "ItemStackMixin",
     "LivingEntityMixin",
     "PlayerEntityMixin",
-    "SwordItemMixin",
-    "interfaces.StatusEffectMixin"
+    "SwordItemMixin"
   ],
   "client": [
+    "client.AbstractClientPlayerEntityMixin",
     "client.AbstractInventoryScreenMixin",
     "client.BipedEntityModelMixin",
+    "client.ClientPlayNetworkHandlerMixin",
+    "client.EntityRenderDispatcherMixin",
+    "client.EntityRendererMixin",
     "client.HudMixin",
+    "client.PlayerEntityRendererMixin",
     "client.movement.CameraMixin",
-    "client.movement.KeyboardMixin",
     "client.movement.EntityMixin",
+    "client.movement.KeyboardMixin",
     "client.movement.MouseMixin"
+  ],
+  "server": [
   ],
   "injectors": {
     "defaultRequire": 1

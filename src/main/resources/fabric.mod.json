@@ -30,13 +30,20 @@
       ],
       "net/minecraft/class_1792": [
         "arr/armuriii/arrlib/interfaces/IItem"
+      ],
+      "net/minecraft/class_1007": [
+        "arr/armuriii/arrlib/interfaces/IPlayerEntityRenderer"
+      ],
+      "net/minecraft/class_897": [
+        "arr/armuriii/arrlib/interfaces/IEntityRenderer"
       ]
     },
     "cardinal-components": [
       "arrlib:damage_immunity",
       "arrlib:effect_immunity",
       "arrlib:player_enchantment",
-      "arrlib:lock_client_movement"
+      "arrlib:lock_client_movement",
+      "arrlib:discard_player"
     ]
   },
   "mixins": [

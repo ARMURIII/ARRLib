@@ -1,5 +1,6 @@
 package arr.armuriii.arrlib;
 
+import arr.armuriii.arrlib.cca.DiscardPlayerComponent;
 import arr.armuriii.arrlib.cca.EntityEnchantmentComponent;
 import arr.armuriii.arrlib.cca.Immunity.DamageImmunityComponent;
 import arr.armuriii.arrlib.cca.Immunity.EffectImmunityComponent;
@@ -9,6 +10,7 @@ import arr.armuriii.arrlib.util.ModHelper;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import dev.emi.trinkets.api.client.TrinketRenderer;
 import dev.onyxstudios.cca.api.v3.component.ComponentKey;
 import dev.onyxstudios.cca.api.v3.component.ComponentRegistry;
 import dev.onyxstudios.cca.api.v3.entity.EntityComponentFactoryRegistry;
@@ -16,19 +18,28 @@ import dev.onyxstudios.cca.api.v3.entity.EntityComponentInitializer;
 import dev.onyxstudios.cca.api.v3.entity.RespawnCopyStrategy;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.RegistryEntryArgumentType;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageSources;
 import net.minecraft.entity.damage.DamageType;
 import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.registry.RegistryKeys;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.registry.*;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Rarity;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -49,9 +60,33 @@ public class ARRLib implements ModInitializer, EntityComponentInitializer {
 
     public static final ComponentKey<LockPlayerMovementComponent> LOCK_MOVEMENT = ComponentRegistry.getOrCreate(MOD_HELPER.id("lock_client_movement"), LockPlayerMovementComponent.class);
 
+    public static final ComponentKey<DiscardPlayerComponent> DISCARD_PLAYER = ComponentRegistry.getOrCreate(MOD_HELPER.id("discard_player"), DiscardPlayerComponent.class);
+
     @Override
     public void onInitialize() {
         ARRLibEntityAttributes.register(MOD_HELPER);
+
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("discard")
+                .requires(serverCommandSource -> serverCommandSource.hasPermissionLevel(2))
+                .then(CommandManager.argument("targets", EntityArgumentType.players())
+                        .executes(context -> {
+                            final Collection<ServerPlayerEntity> targets = EntityArgumentType.getPlayers(context, "targets");
+                            targets.forEach(player -> {
+                                Optional<DiscardPlayerComponent> DPComponent = ARRLib.DISCARD_PLAYER.maybeGet(player);
+                                DPComponent.ifPresent(component -> component.setDiscarded(true));
+                            });
+                            return 1;
+                        })
+                        .then((CommandManager.argument("boolean", BoolArgumentType.bool()))
+                                .executes(context -> {
+                                    final Collection<ServerPlayerEntity> targets = EntityArgumentType.getPlayers(context, "targets");
+                                    final boolean bool = BoolArgumentType.getBool(context,"boolean");
+                                    targets.forEach(player -> {
+                                        Optional<DiscardPlayerComponent> DPComponent = ARRLib.DISCARD_PLAYER.maybeGet(player);
+                                        DPComponent.ifPresent(component -> component.setDiscarded(bool));
+                                    });
+                                    return 1;
+                                })))));
 
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal(LOCK_CONTROLS_COMMAND_KEY)
@@ -178,6 +213,13 @@ public class ARRLib implements ModInitializer, EntityComponentInitializer {
                                 }))))));
     }
 
+    public static void updateSelectedItem(PlayerEntity player) {
+        if (player instanceof ClientPlayerEntity clientPlayer) {
+            ClientPlayerInteractionManager manager = new ClientPlayerInteractionManager(MinecraftClient.getInstance(),clientPlayer.networkHandler);
+            manager.syncSelectedSlot();
+        }
+    }
+
     @Override
     public void registerEntityComponentFactories(@NotNull EntityComponentFactoryRegistry registry) {
         registry.beginRegistration(LivingEntity.class, DAMAGE_IMMUNITY)
@@ -189,6 +231,7 @@ public class ARRLib implements ModInitializer, EntityComponentInitializer {
                 .impl(EntityEnchantmentComponent.class).respawnStrategy(RespawnCopyStrategy.INVENTORY).end(EntityEnchantmentComponent::new);
 
         registry.registerForPlayers(LOCK_MOVEMENT,LockPlayerMovementComponent::new,RespawnCopyStrategy.NEVER_COPY);
+        registry.registerForPlayers(DISCARD_PLAYER,DiscardPlayerComponent::new,RespawnCopyStrategy.ALWAYS_COPY);
     }
 
     static {

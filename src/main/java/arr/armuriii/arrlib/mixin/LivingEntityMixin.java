@@ -2,19 +2,20 @@ package arr.armuriii.arrlib.mixin;
 
 import arr.armuriii.arrlib.ARRLib;
 import arr.armuriii.arrlib.cca.Immunity.EffectImmunityComponent;
-import arr.armuriii.arrlib.cca.LockPlayerMovementComponent;
 import arr.armuriii.arrlib.init.ARRLibEntityAttributes;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.effect.StatusEffects;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Optional;
@@ -43,4 +44,22 @@ abstract class LivingEntityMixin {
         LivingEntity living = (LivingEntity) (Object)this;
         if (living.getWorld().isClient()) cir.setReturnValue(false);
     }
+
+    /*@ModifyArg(method = "getMainHandStack",at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getEquippedStack(Lnet/minecraft/entity/EquipmentSlot;)Lnet/minecraft/item/ItemStack;"))
+    private EquipmentSlot ARRLib$Test(EquipmentSlot slot) {
+        if (this.hasStatusEffect(StatusEffects.UNLUCK)) {
+            return EquipmentSlot.OFFHAND;
+        }
+        return slot;
+    }
+
+    @ModifyArg(method = "getOffHandStack",at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getEquippedStack(Lnet/minecraft/entity/EquipmentSlot;)Lnet/minecraft/item/ItemStack;"))
+    private EquipmentSlot ARRLib$Test2(EquipmentSlot slot) {
+        if (this.hasStatusEffect(StatusEffects.UNLUCK)) {
+            return EquipmentSlot.MAINHAND;
+        }
+        return slot;
+    }*/
+
+
 }
