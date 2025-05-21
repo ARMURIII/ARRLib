@@ -24,13 +24,12 @@ public abstract class BipedEntityModelMixin<T extends LivingEntity> extends Anim
             method = {"setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V"},
             at = @At(
                     value = "TAIL"
-            ),
-            cancellable = true
+            )
     )
     public void ARRLib$poseModel(T livingEntity, float f, float g, float h, float i, float j, CallbackInfo ci) {
         ItemStack mainStack = livingEntity.getMainHandStack();
         ItemStack offStack = livingEntity.getOffHandStack();
-        BipedEntityModel<LivingEntity> model = (BipedEntityModel<LivingEntity>)(Object) this;
+        BipedEntityModel<LivingEntity> model = (BipedEntityModel<LivingEntity>)(Object)this;
         if (livingEntity instanceof PlayerEntity player) {
             mainStack.getItem().ARRLib$animateModel(mainStack, player, model, player.getMainArm(), false);
             offStack.getItem().ARRLib$animateModel(offStack, player, model, player.getMainArm().getOpposite(), true);

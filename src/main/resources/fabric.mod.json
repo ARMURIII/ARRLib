@@ -21,6 +21,9 @@
     ],
     "cardinal-components-entity": [
       "arr.armuriii.arrlib.ARRLib"
+    ],
+    "mm:early_risers": [
+      "arr.armuriii.arrlib.util.ASMUtil"
     ]
   },
   "custom": {
@@ -36,6 +39,9 @@
       ],
       "net/minecraft/class_897": [
         "arr/armuriii/arrlib/interfaces/IEntityRenderer"
+      ],
+      "net/minecraft/class_1657": [
+        "arr/armuriii/arrlib/interfaces/IPlayerTargeting"
       ]
     },
     "cardinal-components": [
@@ -44,7 +50,12 @@
       "arrlib:player_enchantment",
       "arrlib:lock_client_movement",
       "arrlib:discard_player"
-    ]
+    ],
+    "modmenu": {
+      "badges": [
+        "library"
+      ]
+    }
   },
   "mixins": [
     "arrlib.mixins.json"
@@ -53,5 +64,5 @@
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
     "minecraft": "${minecraft_version}"
-  }
+    }
 }

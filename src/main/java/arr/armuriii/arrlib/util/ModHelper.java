@@ -1,6 +1,9 @@
 package arr.armuriii.arrlib.util;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.client.item.ClampedModelPredicateProvider;
@@ -8,8 +11,11 @@ import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,13 +44,28 @@ public class ModHelper {
     }
 
     // REGISTERING
-
     public <V, T extends V> T register(Registry<V> registry, String name, T entry) {
         return Registry.register(registry, id(name), entry);
     }
 
     public Item registerItem(String name, Item item) {
         return Registry.register(Registries.ITEM, id(name), item);
+    }
+
+    public void addItemToItemGroup(Item item, RegistryKey<ItemGroup> group) {
+        ItemGroupEvents.modifyEntriesEvent(group).register((entries)-> entries.add(item.getDefaultStack()));
+    }
+
+    public void addItemToItemGroup(ItemStack item, RegistryKey<ItemGroup> group) {
+        ItemGroupEvents.modifyEntriesEvent(group).register((entries)-> entries.add(item));
+    }
+
+    public void addItemToItemGroupBefore(ItemStack item, RegistryKey<ItemGroup> group, ItemStack beforeStack) {
+        ItemGroupEvents.modifyEntriesEvent(group).register((entries)-> entries.addBefore(beforeStack,item));
+    }
+
+    public void addItemToItemGroupAfter(ItemStack item, RegistryKey<ItemGroup> group, ItemStack afterStack) {
+        ItemGroupEvents.modifyEntriesEvent(group).register((entries)-> entries.addAfter(afterStack,item));
     }
 
     public Block registerBlock(String name, Block block) {
@@ -76,6 +97,7 @@ public class ModHelper {
         return Registry.register(Registries.ATTRIBUTE, id(name), attribute);
     }
 
+    @Environment(EnvType.CLIENT)
     public void registerModelPredicate(Item item, String name, ClampedModelPredicateProvider predicateProvider) {
         FabricModelPredicateProviderRegistry.register(item, id(name), predicateProvider);
     }

@@ -1,24 +1,24 @@
 package arr.armuriii.arrlib.interfaces;
 
+import arr.armuriii.arrlib.init.ARRLibRarity;
+import arr.armuriii.arrlib.util.BuiltinColors;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageType;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
-import net.minecraft.text.Text;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Formatting;
+
+import java.awt.*;
 
 @SuppressWarnings({"unused"})
 public interface IItem {
@@ -39,13 +39,14 @@ public interface IItem {
         return new DamageSource(registry.entryOf(DamageTypes.MOB_ATTACK), living);
     }
 
-    default Formatting ARRLib$getFormatting(ItemStack stack, Formatting original) {
-        if (stack.isOf(Items.ENDER_EYE)) return Formatting.GOLD;
+    default Style ARRLib$getStyle(ItemStack stack, Style original) {
+        switch (stack.getRarity().name().toUpperCase()) {
+            case "CURSED" -> {return original.withColor(BuiltinColors.MAUVE);}
+            case "BLESSED" -> {return original.withColor(BuiltinColors.MELLOW);}
+            case "WARDEN" -> {return original.withColor(BuiltinColors.TEAL_BLUE);}
+        }
         return original;
     }
 
-    default Style ARRLib$getStyle(ItemStack stack, Style original) {
-        if (stack.isOf(Items.ENDER_EYE)) return original.withFormatting(Formatting.GOLD);
-        return original;
-    }
+    default void ARRLib$entityTick() {}
 }

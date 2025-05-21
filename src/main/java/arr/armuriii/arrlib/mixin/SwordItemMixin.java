@@ -1,33 +1,15 @@
 package arr.armuriii.arrlib.mixin;
 
-import arr.armuriii.arrlib.ARRLib;
-import arr.armuriii.arrlib.cca.Immunity.DamageImmunityComponent;
-import arr.armuriii.arrlib.cca.Immunity.EffectImmunityComponent;
-import arr.armuriii.arrlib.init.ARRLibEntityAttributes;
 import com.google.common.collect.ImmutableMultimap;
-import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.damage.DamageType;
-import net.minecraft.entity.damage.DamageTypes;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolMaterial;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import static arr.armuriii.arrlib.init.ARRLibEntityAttributes.SWEEPING;
@@ -35,12 +17,17 @@ import static arr.armuriii.arrlib.init.ARRLibEntityAttributes.SWEEPING;
 @Mixin(SwordItem.class)
 public class SwordItemMixin {
 
-    @Inject(
+    @ModifyVariable(
             method = {"<init>"},
-            at = {@At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableMultimap$Builder;put(Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableMultimap$Builder;",ordinal = 1, shift = At.Shift.AFTER)}
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lcom/google/common/collect/ImmutableMultimap$Builder;build()Lcom/google/common/collect/ImmutableMultimap;",
+                    remap = false
+            )
     )
-    public void ARRLib$addSweepingAttribute(ToolMaterial toolMaterial, int attackDamage, float attackSpeed, Item.Settings settings, CallbackInfo ci, @Local ImmutableMultimap.Builder<EntityAttribute, EntityAttributeModifier> builder) {
+    private ImmutableMultimap.Builder<EntityAttribute, EntityAttributeModifier> ARRLib$addSweeping(ImmutableMultimap.Builder<EntityAttribute, EntityAttributeModifier> builder, ToolMaterial toolMaterial, int attackDamage, float attackSpeed, Item.Settings settings) {
         UUID SWEEP_RANGE_MODIFIER_ID = UUID.fromString("AF3F57D3-645C-4F38-A581-8C23A33DB5CF");
         builder.put(SWEEPING, new EntityAttributeModifier(SWEEP_RANGE_MODIFIER_ID, "Weapon modifier", 1, EntityAttributeModifier.Operation.ADDITION));
+        return builder;
     }
 }

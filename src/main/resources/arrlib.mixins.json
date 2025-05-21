@@ -6,19 +6,23 @@
   "mixins": [
     "DamageSourcesMixin",
     "EnchantmentHelperMixin",
+    "ItemEntityMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
     "PlayerEntityMixin",
+    "ServerPlayerEntityMixin",
     "SwordItemMixin"
   ],
   "client": [
     "client.AbstractClientPlayerEntityMixin",
     "client.AbstractInventoryScreenMixin",
     "client.BipedEntityModelMixin",
+    "client.ClientPlayerEntityMixin",
     "client.ClientPlayNetworkHandlerMixin",
     "client.EntityRenderDispatcherMixin",
     "client.EntityRendererMixin",
     "client.HudMixin",
+    "client.MinecraftClientMixin",
     "client.PlayerEntityRendererMixin",
     "client.movement.CameraMixin",
     "client.movement.EntityMixin",
