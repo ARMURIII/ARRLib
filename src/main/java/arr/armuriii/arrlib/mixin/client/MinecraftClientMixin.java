@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
@@ -11,6 +12,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
+import net.minecraft.util.Hand;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -39,11 +41,13 @@ public abstract class MinecraftClientMixin {
 
     @Shadow @Nullable public ClientWorld world;
 
+    @Shadow @Nullable public ClientPlayerInteractionManager interactionManager;
+
     public MinecraftClientMixin() {
     }
 
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/tutorial/TutorialManager;tick(Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/util/hit/HitResult;)V"))
-    public void setLastTarget(CallbackInfo ci) {
+    public void ARRLib$setLastTarget(CallbackInfo ci) {
         Entity camera = this.getCameraEntity();
         if (this.player == null)
             return;
@@ -52,7 +56,7 @@ public abstract class MinecraftClientMixin {
         if (this.world == null)
             return;
         double distanceCap = 128f * 128f;
-        List<Entity> raycast = MRaycasting.raycast(this.player,distanceCap,this::isValidTarget);
+        List<Entity> raycast = MRaycasting.raycast(this.player,distanceCap,this::ARRLib$isValidTarget);
 
         if (!raycast.isEmpty()) {
             if (raycast.get(0) instanceof LivingEntity living) {
@@ -61,34 +65,21 @@ public abstract class MinecraftClientMixin {
         }
     }
 
-    /*@Inject(
+    @Inject(
             method = {"doAttack"},
             at = {@At("HEAD")},
             cancellable = true
     )
-    private void amarite$cancelAttack(CallbackInfoReturnable<Boolean> cir) {
-        if (this.player != null && this.player.getMainHandStack().isOf(AmariteItems.AMARITE_DISC)) {
-            ClientPlayNetworking.send(Amarite.DISC_ABILITY, PacketByteBufs.empty());
-            cir.setReturnValue(false);
+    private void ARRLib$attackTarget(CallbackInfoReturnable<Boolean> cir) {
+        if (this.player != null && this.player.ARRLib$getTarget() != null && interactionManager != null) {
+            interactionManager.attackEntity(player, player.ARRLib$getTarget());
+            player.swingHand(Hand.MAIN_HAND);
+            cir.setReturnValue(true);
         }
     }
 
-    @Inject(
-            method = {"handleInputEvents"},
-            at = {@At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/client/option/KeyBinding;wasPressed()Z",
-                    ordinal = 10
-            )}
-    )
-    private void amarite$handleSwordAbility(CallbackInfo ci) {
-        if (this.options.attackKey.wasPressed() && this.player != null && this.player.getMainHandStack().isOf(AmariteItems.AMARITE_LONGSWORD) && LongswordComponent.get(this.player).isBlocking() && LongswordComponent.get(this.player).canUseAbility()) {
-            ClientPlayNetworking.send(Amarite.LONGSWORD_ABILITY, PacketByteBufs.empty());
-        }
-    }*/
-
     @Unique
-    public boolean isValidTarget(PlayerEntity player, Entity target) {
+    public boolean ARRLib$isValidTarget(PlayerEntity player, Entity target) {
         if (!(target instanceof LivingEntity living)) return false;
         if (player == null) return false;
         if (target == player) return false;

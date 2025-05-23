@@ -4,3 +4,4 @@ accessible class net/minecraft/client/gui/hud/InGameHud$HeartType
 accessible class net/minecraft/network/packet/s2c/play/PlayerListS2CPacket$Serialized
 accessible class net/minecraft/enchantment/EnchantmentHelper$Consumer
 accessible method net/minecraft/client/network/ClientPlayerInteractionManager syncSelectedSlot ()V
+accessible method net/minecraft/entity/LivingEntity sendEquipmentChanges ()V

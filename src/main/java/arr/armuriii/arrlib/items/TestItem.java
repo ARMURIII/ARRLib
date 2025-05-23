@@ -3,6 +3,7 @@ package arr.armuriii.arrlib.items;
 import arr.armuriii.arrlib.ARRLib;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -67,10 +68,6 @@ public class TestItem extends SwordItem {
         if (entity instanceof PlayerEntity player) {
             if (attackDamage != player.getHungerManager().getFoodLevel()/5f) {
                 attackDamage = player.getHungerManager().getFoodLevel()/5f;
-                player.clearActiveItem();
-                if (world.isClient()) {
-                    ARRLib.updateSelectedItem(player);
-                }
             }
         }
     }

@@ -11,7 +11,8 @@
     "LivingEntityMixin",
     "PlayerEntityMixin",
     "ServerPlayerEntityMixin",
-    "SwordItemMixin"
+    "SwordItemMixin",
+    "interfaces.ItemMixin"
   ],
   "client": [
     "client.AbstractClientPlayerEntityMixin",
@@ -25,6 +26,7 @@
     "client.MinecraftClientMixin",
     "client.PlayerEntityRendererMixin",
     "client.movement.CameraMixin",
+    "client.ClientPlayerInteractionManagerMixin",
     "client.movement.EntityMixin",
     "client.movement.KeyboardMixin",
     "client.movement.MouseMixin"

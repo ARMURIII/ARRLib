@@ -21,9 +21,6 @@
     ],
     "cardinal-components-entity": [
       "arr.armuriii.arrlib.ARRLib"
-    ],
-    "mm:early_risers": [
-      "arr.armuriii.arrlib.util.ASMUtil"
     ]
   },
   "custom": {
@@ -42,6 +39,9 @@
       ],
       "net/minecraft/class_1657": [
         "arr/armuriii/arrlib/interfaces/IPlayerTargeting"
+      ],
+      "net/minecraft/class_636": [
+        "arr/armuriii/arrlib/interfaces/IClientPlayerInteractionManager"
       ]
     },
     "cardinal-components": [

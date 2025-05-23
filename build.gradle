@@ -80,7 +80,7 @@ dependencies {
     for (String module in port_lib_modules.split(",")) {
         modImplementation(include("io.github.fabricators_of_create.Porting-Lib:$module:$port_lib_version+$minecraft_version"))
     }
-    modImplementation(include("com.github.Chocohead:Fabric-ASM:v2.3"))
+    //modImplementation(include("com.github.Chocohead:Fabric-ASM:v2.3"))
     //annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     //modImplementation include("fuzs.extensibleenums:extensibleenums-fabric:20.1.0")
     include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:0.4.1")))
